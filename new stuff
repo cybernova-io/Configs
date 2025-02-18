@@ -1,0 +1,10 @@
+#recursive filesystem search for file write time
+for /f %F in ("__FILEPATH") DO for /r %G in (*) do @echo "%~tG" "%G" | findstr /c:"%~tF"
+
+
+
+#https://www.linuxquestions.org/questions/linux-software-2/how-can-i-read-the-audit-time-stamp-msg%3Daudit-1213186256-105-20663-a-648547/
+nl /var/log/audit/audit.log | perl -ne 'chomp; if ( /(.*msg=audit\()(\d+)(\.\d+:\d+.*)/ ) { $td = scalar localtime $2; print "$1$td$3\n"; }'
+
+#convert auditd epoch to timestamp
+var=`cat audit.log | cut -d " " -f 2 | cut -d "(" -f 2 | cut -d "." -f 1`; for i in $var; do date -d @$i >> /tmp/test; done; nl /tmp/test
